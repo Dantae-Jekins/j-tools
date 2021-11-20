@@ -29,6 +29,25 @@ void merge(int *v, int *aux, int siz, int ini)
     v[i] = aux[i];
 }
 
+void merge_recursion(int *vetor, int *aux, int siz, int ini)
+{
+  if (siz == 1)
+    return;
+
+  merge_recursion(vetor, aux, (siz+1)/2, ini);
+  merge_recursion(vetor, aux, siz/2, ini+(siz+1)/2);
+  merge(vetor, aux, siz, ini);
+}
+
+// Algoritmos de ordenação:
+
+void merge_sort(int *vetor, int size)
+{
+  int *aux = malloc(sizeof(int)*size);
+  merge_recursion(vetor, aux, size, 0);
+  free(aux);  
+}
+
 void selection_sort(int *vetor, int size)
 {
 	int ordenado = 0;
@@ -55,14 +74,4 @@ void bubble_sort(int *vetor, int size)
         swap(vetor, j, j+1);
   	  }
 	}
-}
-
-void merge_sort(int *vetor, int *aux, int siz, int ini)
-{
-  if (siz == 1)
-    return;
-
-  merge_sort(vetor, aux, (siz+1)/2, ini);
-  merge_sort(vetor, aux, siz/2, ini+(siz+1)/2);
-  merge(vetor, aux, siz, ini);
 }

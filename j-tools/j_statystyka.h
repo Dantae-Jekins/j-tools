@@ -1,7 +1,7 @@
 void fill_array(int *vetor, int tam, int max, int min)
 {
   int intervalo = max - min + 1;
-  for (size_t i = 0; i < tam; i++)
+  for (int i = 0; i < tam; i++)
     vetor[i] = (rand()%intervalo) + min;
   
 }

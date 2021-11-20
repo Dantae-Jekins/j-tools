@@ -17,11 +17,11 @@ int int_podniesc(int num1, int base)
     return aux;
 }
 
-int int_log(int base, int num)
+int int_log(int base, int num1)
 {
   int i;
-  for (i = 1; num > base; i++)
-    num /= base;
+  for (i = 1; num1 > base; i++)
+    num1 /= base;
 
   return i;
 }
