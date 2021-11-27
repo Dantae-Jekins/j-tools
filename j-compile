@@ -1,15 +1,41 @@
 #!/bin/bash
 
+compile_program()
+{	
+    flags=""
+    if $DEBUG; then
+      flags+="-g"
+    fi
+    if $LINKING; then
+      flags+=" -lm"
+    fi
+    $1 $INPUT $2 $flags -o $HOME/HD/PRGS/.bin/$OUTPUT
+}
 
 DEBUG=false
-if [[ $1 == "-g" ]];
+LINKING=false
+ORDER=0
+
+for flag in $@
+do
+  if [[  $flag == "-g" ]];
+  then
+    DEBUG=true
+    shift 1
+
+  elif [[ $flag == "-lm" ]];
+  then
+    LINKING=true
+    shift 1
+  fi
+done
+
+INPUT=$1
+OUPUT=$2
+
+if [ -f $2 ]; 
 then
-  DEBUG=true
-  INPUT=$2
-  OUTPUT=$3
-else
-  INPUT=$1
-  OUTPUT=$2
+  OUTPUT="a.out"
 fi
 
 if ! [ -f "$INPUT" ];
@@ -24,19 +50,7 @@ then
 	file=$(<$INPUT)
 
   if ! [[ $file == *"#include"*"<allegro"* ]]; then
-    if [ "$DEBUG" = true ]; then
-	    if ! [ $OUTPUT ]; then
-		    gcc $INPUT -g -o  $HOME/HD/PRGS/.bin/a.out 
-	    else
-		    gcc $INPUT -g -o  $HOME/HD/PRGS/.bin/$OUTPUT
-      fi
-    else
-      if ! [ $OUTPUT ]; then
-	      gcc $INPUT -g -o $HOME/HD/PRGS/.bin/a.out 
-      else
-        gcc $INPUT -g -o $HOME/HD/PRGS/.bin/$OUTPUT
-      fi
-    fi
+  	compile_program "gcc" 
   else
    var="$(cat $INPUT | grep "#include" | grep "allegro_")" #Acha as bibliotecas Allegro (linha)
    libs='allegro-5 ' # Inicializa variável libs
@@ -59,29 +73,12 @@ then
 				  fi 
 			  done 
 		  fi 
-	  done   
+	  done 
 	  echo Bibliotecas ALLEGRO Adicionais: $libs
-    if [ "$DEBUG" = true ]; then
-	    if ! [ $OUTPUT ]; then
- 		  	gcc $INPUT -g -o $HOME/HD/PRGS/.bin/a.out $(pkg-config --libs $libs) -Wall
-  	  else
-  	  	gcc $INPUT -g -o $HOME/HD/PRGS/.bin/$OUTPUT $(pkg-config --libs $libs) -Wall
-  	  fi
-      else
-	    if ! [ $OUTPUT ]; then
-			  gcc $INPUT -o $HOME/HD/PRGS/.bin/a.out $(pkg-config --libs $libs) -Wall
-	 	  else
-	 		  gcc $INPUT -o $HOME/HD/PRGS/.bin/$OUTPUT $(pkg-config --libs $libs) -Wall
-	 	  fi
-    fi
+    compile_program "gcc" "$(pkg-config --libs $libs)"
   fi
 elif [[ $INPUT == *.rs ]]
 then
-	echo "Compilando arquivo .rs"	
-	if ! [ $OUTPUT ]; then
-		rustc $INPUT -o $HOME/HD/PRGS/.bin/a.out 
-	else
-		rustc $INPUT -o $HOME/HD/PRGS/.bin/$OUTPUT
-	fi
+  compile_program "rustc"
 fi
 

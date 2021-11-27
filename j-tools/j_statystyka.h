@@ -1,11 +1,20 @@
-void fill_array(int *vetor, int tam, int max, int min)
+// preenche um vetor com valores aleatórios
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+
+#ifndef J_STATYSTYKA_H
+#define J_STATYSTYKA_H
+
+void fill_array(int *array, int tam, int max, int min)
 {
   int intervalo = max - min + 1;
   for (int i = 0; i < tam; i++)
-    vetor[i] = (rand()%intervalo) + min;
+    array[i] = (rand()%intervalo) + min;
   
 }
 
+// extrai o múltiplo de menor conflito para print_simplified
 int best_mult(int num, int min, int max)
 {
   // extrai o melhor número para as operações abaixo
@@ -20,9 +29,10 @@ int best_mult(int num, int min, int max)
   return j;
 }
 
-void print_simplified(int *vetor, int tam)
+// printa um array de forma legível
+void print_simplified(int *array, int tam)
 {
-  // simplifica o vetor em apenas 8, 16 ou 32
+  // simplifica o array em apenas 8, 16 ou 32
   // espaços (tirando a média, moda ou mediana
   // entre eles), isto para ser possível printar.
   int size;
@@ -59,7 +69,7 @@ void print_simplified(int *vetor, int tam)
     else 
     {
 
-      aux[j] += vetor[i];
+      aux[j] += array[i];
       if(i % jump == jump - 1)
       {
       	// fim de uma contagem
@@ -86,3 +96,4 @@ void print_simplified(int *vetor, int tam)
 
   free(aux);
 }
+#endif

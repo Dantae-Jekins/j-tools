@@ -1,45 +1,65 @@
 // cópia de elementos
-int *copy_array(int *vetor, int tam)
+#include <stdlib.h>
+#include "j_math.h"
+
+#ifndef J_WEKTORY_H
+#define J_WEKTORY_H
+
+int *copy_array(int *array, int tam)
 {
     int *aux = (int*)malloc(sizeof(int)*tam);
     for(int i = 0; i < tam; i++)
-        aux[i] = vetor[i];
+        aux[i] = array[i];
     return aux;
 }
 
-// move de uma str para outra do ponto vec1[i++] para vec[j++], cortando vec1
-char *strcrop(unsigned int i, unsigned int j, char *vec1, char *vec2)
-{ 
-  int size = 4;
-  vec2 = (char*)realloc(vec2, sizeof(char)*size);
-  while(vec1[i]!=';')
-  {
-    vec2[j++] = vec1[i++];
-    if( size == j)
-    {
-      size+=4; //alocamos + 4 de espaço a cada vez
-      vec2 = (char*)realloc(vec2, sizeof(char)*size);
-    } 
-  } 
-  //realoca o espaço certo
-  vec2 = (char*)realloc(vec2, sizeof(char)*(j+1));
-  vec2[j] = '\0'; // coloca ponto de parada
-  return vec2;
+int str_len(char *string)
+{
+    int i = 0;
+    while(string[i++]!='\0');
+    return i;
 }
 
-// move uma quantidade prédeterminada de elementos para o vetor 1 do vetor 2.
-void strmov(unsigned int i, char *vec1, char *vec2)
+char *str_copy(char *array)
+{
+    int tam = str_len(array);
+    char *aux = (char*)malloc(sizeof(int)*(1+tam));
+    for (int i = 0; i < tam; i++)
+        aux[i] = array[i];
+    
+    aux[tam] = '\0'; //coloca ponto de parada
+    return aux;
+}
+
+// move de uma str para outra, começando do ponto min.
+char *str_crop(unsigned int start, unsigned int end, char *str1)
+{ 
+
+  int size = end-start+1;
+  char *str2 = (char*)malloc(sizeof(char)*(size));
+  
+  int i = 0;
+  while((str1[start] != '\0') && (end > start))
+  {
+    str2[i++] = str1[start++];
+  } 
+
+  str2[size-1] = '\0'; // coloca ponto de parada
+  return str2;
+}
+
+// move uma quantidade pré-determinada de elementos para o vetor 1 do vetor 2.
+void str_mov(unsigned int i, char *str1, char *str2)
 {
   int j = 0;
   while( j <= i )
   {
-    vec1[j] = vec2[j];
+    str1[j] = str2[j];
     j++;
-  } 
-  
+  }  
 }
 
-int match_string(char *palavra1, char *palavra2)
+int str_match(char *palavra1, char *palavra2)
 {
     int i = 0;
     do
@@ -84,3 +104,5 @@ int return_integer(char *palavra1)
     
     return count;
 }
+
+#endif

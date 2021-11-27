@@ -1,3 +1,9 @@
+#include <math.h>
+
+#ifndef J_MATH_H
+#define J_MATH_H
+
+double _pi = 3.1415926;
 // potênciação
 int int_podniesc(int num1, int base)
 {
@@ -17,7 +23,23 @@ int int_podniesc(int num1, int base)
     return aux;
 }
 
-int int_log(int base, int num1)
+// função rápida
+int int_sqrpodniesc(int num1)
+{
+  return num1*num1;
+}
+
+int faotorial(int num1)
+{
+  int i = num1;
+  num1  = 1;
+  
+  while(i > 1)
+    num1 *= i--;
+
+  return num1; 
+}
+int int_log(int num1, int base)
 {
   int i;
   for (i = 1; num1 > base; i++)
@@ -27,14 +49,16 @@ int int_log(int base, int num1)
 }
 
 // diferença entre 2 pontos
-int int_module(int i, int j)
+int int_module(int num1, int num2)
 {
-  if (j > i)
+  if (num2 > num1)
   {
-    j -= i;
-    return j;
+    num2 -= num1;
+    return num2;
   }
 
-  i -= j;
-  return i;
+  num1 -= num2;
+  return num1;
 }
+
+#endif
