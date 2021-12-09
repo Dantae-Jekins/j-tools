@@ -1,9 +1,8 @@
-#include <math.h>
-#include "j_math.h"
-
 #ifndef J_GEOMETRY_H
-// conceitos baseados em um plano 2D
 #define J_GEOMETRY_H
+#include <math.h>
+#include <stdio.h>
+#include "j_math.h"
 typedef struct COORDENADA
 {
     int x;

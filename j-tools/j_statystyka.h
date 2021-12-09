@@ -1,10 +1,9 @@
-// preenche um vetor com valores aleatórios
+#ifndef J_STATYSTYKA_H
+#define J_STATYSTYKA_H
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 
-#ifndef J_STATYSTYKA_H
-#define J_STATYSTYKA_H
 
 void fill_array(int *array, int tam, int max, int min)
 {

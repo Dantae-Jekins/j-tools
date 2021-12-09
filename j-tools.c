@@ -5,7 +5,6 @@
 #include "j-tools/j_math.h"
 #include "j-tools/j_sorters.h"
 #include "j-tools/j_statystyka.h"
-#include "j-tools/j_wektory.h"
 #include "j-tools/j_geometry.h"
 
 int main(int argc, char *argv[])

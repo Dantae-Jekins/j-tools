@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
 #ifndef J_SORTERS_H
 #define J_SORTERS_H
+#include <stdio.h>
+#include <stdlib.h>
 
 void swap(int *str, int i, int j)
 {
@@ -48,7 +48,7 @@ void merge_recursion(int *array, int *aux, int siz, int ini)
 
 void merge_sort(int *array, int size)
 {
-  int *aux = malloc(sizeof(int)*size);
+  int *aux = (int*) malloc(sizeof(int)*size);
   merge_recursion(array, aux, size, 0);
   free(aux);  
 }
