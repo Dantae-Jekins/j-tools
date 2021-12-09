@@ -1,5 +1,8 @@
 #ifndef J_WEKTORY_H
 #define J_WEKTORY_H
+
+// V.1
+
 #include <stdlib.h>
 #include "j_math.h"
 

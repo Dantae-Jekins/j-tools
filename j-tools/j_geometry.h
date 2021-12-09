@@ -1,5 +1,8 @@
 #ifndef J_GEOMETRY_H
 #define J_GEOMETRY_H
+
+// V.1
+
 #include <math.h>
 #include <stdio.h>
 #include "j_math.h"
@@ -81,8 +84,8 @@ double modulo(vetor vec1, base base)
     double aux1 = 0.0, aux2 = 0.0;
     
     // extrai pitágoras
-    aux1 = (double)int_sqrpodniesc(vec1.x);
-    aux1 += (double)int_sqrpodniesc(vec1.y);
+    aux1 = (double)int_sqr(vec1.x);
+    aux1 += (double)int_sqr(vec1.y);
     
     // se a base não possuir ângulo de 90 (cos=0)
     if (aux2 != base.cos)

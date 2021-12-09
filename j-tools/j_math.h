@@ -1,5 +1,8 @@
 #ifndef J_MATH_H
 #define J_MATH_H
+
+// V.1
+
 #include <math.h>
 
 // potênciação

@@ -1,5 +1,8 @@
 #ifndef J_STATYSTYKA_H
 #define J_STATYSTYKA_H
+
+// V.1
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
