@@ -18,6 +18,11 @@ To clarify, i am aware that standart functions are a better solution than creati
     Grouping the files manually and sending them to another repository is really taxing,
     so i made a shell script for that, the first argument is the file path to the j-group's target header, and it'll group automatically the needed headers and the 
     grouper header on a file. You can also specify the target output in the second arg.
+    
+    examples:
+    > ./j-export ./j-groups/jg_strings
+
+    > ./j-export ./j-groups/jg_strings ../../path_to_desired_folder
 
 <br>
 

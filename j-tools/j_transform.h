@@ -1,7 +1,7 @@
 #ifndef CONV_H
 #define CONV_H
 
-// V.1
+// V 1.1
 
 #include "j_math.h"
 #include "j_strings.h"
@@ -47,6 +47,7 @@ unsigned ret_uns(char *str1)
     {
         ret *= 10;
         ret += str1[i] - '0';
+        i++;
     }
 
     return ret;

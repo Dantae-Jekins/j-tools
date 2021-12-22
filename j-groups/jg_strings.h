@@ -31,8 +31,8 @@
     int int_log(int num1, int base);
     int int_mod(int num1, int num2);
 
-    #include "../j-tools/j_strings.h"
-    #include "../j-tools/j_arrays.h"
-    #include "../j-tools/j_transform.h"
-    #include "../j-tools/j_math.h"
+    #include "../jg-tools/j_strings.h"
+    #include "../jg-tools/j_arrays.h"
+    #include "../jg-tools/j_transform.h"
+    #include "../jg-tools/j_math.h"
 #endif 

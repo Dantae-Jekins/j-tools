@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# V 1.1
 # file to group files into a folder
 # to make exporting easier
 
@@ -16,21 +17,14 @@ then
 fi
 
 # cria a pasta
-if ! [ -d "jg-tools" ]; 
-then
-    mkdir jg-tools
-
-    # se ela existe então sobrescreva
-    # (só se não for especificado o diretório!)
-else
-    rm -r ./jg-tools/* 
-fi
+mkdir jg-groups
+mkdir jg-tools
 
 # copia o header
-cp $1 ./jg-tools/
+cp $1 ./jg-groups/
 
 # identifica os headers usados
-headers=$(cat ./j-groups/jg_strings.h | grep include | cut -d"/" -f3 | sed 's/.$//')
+headers=$(cat $1 | grep include | cut -d"/" -f3 | sed 's/.$//')
 
 # inclui os headers do arquivo
 for file in $headers; do
@@ -40,7 +34,10 @@ done
 if [[ $2 == "" ]];
 then
     echo "Nenhum local especificado"
-    echo "Produzindo grupo neste diretório"
+    echo "Produzindo grupo neste diretório com nome jg-tools"
+    echo "Por favor separe manualmente os arquivos"
 else
-    mv ./jg-tools $2
+    echo "Criando arquivo jg-group e jg-tools no local especificado"
+    mv jg-groups $2
+    mv jg-tools  $2
 fi
