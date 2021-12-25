@@ -35,7 +35,7 @@ if [[ $2 == "" ]];
 then
     echo "Nenhum local especificado"
     echo "Produzindo grupo neste diretório com nome jg-tools"
-    echo "Por favor separe manualmente os arquivos"
+    echo "Por favor exporte manualmente os arquivos"
 else
     echo "Criando arquivo jg-group e jg-tools no local especificado"
     mv jg-groups $2
