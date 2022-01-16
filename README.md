@@ -4,6 +4,8 @@
 
 To clarify, i am aware that standart functions are a better solution than creating your own functions, so there are two reasons for making this, first is that i enjoy knowing exactly what my function does, which i could solve by looking the source code for most of the libraries i use, but i'm lazy, and the other reason is for me to train programming logic in C.
 
+The only types of functions that i am avoiding to make are functions present within x86-64 architecture such as square root discovery, though i am not capable enough of checking the whole instruction set from things such as Intel to be aware of everything i should avoid so i'd ask for your pardón if anything in that context happens.
+
 
 - j-compile
 
