@@ -7,7 +7,8 @@
 #include "j_math.h" 
 #include <time.h>
 
-// retorna TAM elementos de array em outro vetor
+
+// Retorna TAM elementos de array em outro vetor. Necessário liberar memória alocada.
 int *cpy_array(int *array, int tam)
 {
     int *aux = (int*)malloc(sizeof(int)*tam);
@@ -17,7 +18,7 @@ int *cpy_array(int *array, int tam)
 }
 
 
-// limpa um array de tam posições (seta para 0)
+// Limpa um array de tam posições (seta para 0)
 void clr_array(int *array, int tam)
 {
     for (int i = 0; i < tam; i ++)
@@ -25,7 +26,7 @@ void clr_array(int *array, int tam)
 }
 
 
-// inverte um array
+// Inverte um array
 void inv_array(int *array, int tam)
 {
     int *aux = cpy_array(array, tam); tam--;

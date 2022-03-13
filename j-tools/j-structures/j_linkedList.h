@@ -1,12 +1,15 @@
-#ifndef J_STRUCTURES_H
-#define J_STRUCTURES_H
+#ifndef J_LINKEDLIST_H
+#define J_LINKEDLIST_H
 
-// V 1.0
+// V 1.1
 
 #include<stdlib.h>
 #include<stdbool.h>
-#include "j_strings.h"
-#include "j_transform.h"
+#include "../j_strings.h"
+#include "../j_transform.h"
+
+
+// ESTRUTURAS DE MEMÓRIA PARA INTEIROS
 
 // Node de memória (int)
 struct int_Node
@@ -95,7 +98,17 @@ bool remove_int_List( int_LinkedList *HEAD, int value)
 }
 
 
-// retorna uma string dos valores da lista
+// Libera a memória de uma lista, serve como um clear.
+void free_int_List( int_LinkedList *HEAD ) 
+{
+    while ( HEAD->first != NULL )
+    {
+        remove_int_List( HEAD, HEAD->first->val );
+    }
+}
+
+
+// Retorna uma string dos valores da lista. Necessário liberar memória alocada
 char *int_List_String( int_LinkedList *HEAD )
 {
     // Checa se está vazia
@@ -108,20 +121,41 @@ char *int_List_String( int_LinkedList *HEAD )
     {
         // prepara o retorno
         char *ret = "{ ";
+        char *value = NULL;
+
+        // 2 strings para possibilitar free
+        char *str1 = str_copy( ret );
+        char *str2 = NULL;
 
         // percorre
         int_Node *This = HEAD->first;
         while (1) 
         {
-            // adiciona na string o valor
-            ret = str_concac(ret, ret_str(This->val));
-            
+            // libera value
+            if ( value != NULL )
+                free(value);
+
+            value = ret_str(This->val);
+
+            // concatena e libera a string anterior
+            str2 = str_concac(str1, value);
+            free(str1);
+            str1 = str2;
+
             // vê se é o fim
             if (This->nxt == NULL)
-                return str_concac(ret, " }");
-            
+            {
+                str2 = str_concac(str1, " }");
+                free(str1);
+                free(value);
+                return str2;
+            }
+
             // se não adiciona uma vírgula
-            ret = str_concac(ret, ", ");
+            str2 = str_concac(str1, ", ");
+            free(str1);
+            str1 = str2;
+            
             This = This->nxt;
         }
     }

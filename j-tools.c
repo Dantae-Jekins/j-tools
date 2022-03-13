@@ -1,28 +1,39 @@
 // The sole purpose of this file is to mix all headers in j-tools files
 // and to test them myself.
 
-#include "j-tools/j_structures.h"
+#include "j-tools/j-structures/j_structures.h"
 #include <stdio.h>
 
 int main() {
     int_LinkedList list = new_int_List();
     
-    printf("\n%s", int_List_String(&list));
+    char *val = int_List_String(&list);
+    printf("\n%s", val);
+    free(val);
 
     insert_int_List(&list, 10);
 
-    printf("\n%s", int_List_String(&list));
+    val = int_List_String(&list);
+    printf("\n%s", val);
+    free(val);
 
     insert_int_List(&list, 10);
 
-    printf("\n%s", int_List_String(&list));
+    val = int_List_String(&list);
+    printf("\n%s", val);
+    free(val);
 
     remove_int_List(&list, 10);
 
-    printf("\n%s", int_List_String(&list));
+    val = int_List_String(&list);
+    printf("\n%s", val);
+    free(val);
 
     remove_int_List(&list, 15);
     
-    printf("\n%s", int_List_String(&list));
+    val = int_List_String(&list);
+    printf("\n%s", val);
+    free(val);
 
+    free_int_List( &list );
 }

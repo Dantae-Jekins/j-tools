@@ -1,12 +1,12 @@
 #ifndef J_STRINGS_H
 #define J_STRINGS_H
 
-// V 1.1
+// V 1.2
 
 #include<stdlib.h>
 
 
-// retorna o tamano de string
+// Retorna o tamano da string
 int str_len(char *string)
 {
     int i = 0;
@@ -17,7 +17,7 @@ int str_len(char *string)
 }
 
 
-// retorna uma cópia de uma string
+// Retorna uma cópia de uma string. Necessário liberar memoria alocada.
 char *str_copy(char *string)
 {
     int tam = str_len(string);
@@ -30,7 +30,7 @@ char *str_copy(char *string)
 }
 
 
-// retorna duas strings somadas
+// Retorna duas strings somadas. Necessário liberar memória alocada.
 char *str_concac(char *str1, char *str2)
 {
   // adquire os tamanhos
@@ -55,7 +55,7 @@ char *str_concac(char *str1, char *str2)
 }
 
 
-// retorna str cortado entre start e end.
+// Retorna str cortado entre start e end. Necessário liberar memória alocada
 char *str_crop(unsigned int start, unsigned int end, char *str1)
 { 
 
@@ -73,7 +73,7 @@ char *str_crop(unsigned int start, unsigned int end, char *str1)
 }
 
 
-// move i elementos de str2 para str1
+// Move i elementos de str2 para str1
 void str_mov(unsigned int i, char *str1, char *str2)
 {
   int j = 0;
@@ -85,7 +85,7 @@ void str_mov(unsigned int i, char *str1, char *str2)
 }
 
 
-// verifica se str1 == str2
+// Verifica se str1 == str2
 int str_match(char *str1, char *str2)
 {
     int i = 0;
@@ -98,4 +98,5 @@ int str_match(char *str1, char *str2)
 
     return 1;
 }
+
 #endif
