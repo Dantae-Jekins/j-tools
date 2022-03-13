@@ -9,7 +9,8 @@ compile_program()
     if $LINKING; then
       flags+=" -lm"
     fi
-    $1 $INPUT $2 $flags -o $HOME/HD/PRGS/.bin/$OUTPUT
+    echo $1 $INPUT $2 $flags -o $MYBIN/$OUTPUT 
+    $1 $INPUT $2 $flags -o $MYBIN/$OUTPUT
 }
 
 DEBUG=false
@@ -26,7 +27,7 @@ do
   elif [[ $flag == "-lm" ]];
   then
     LINKING=true
-    shift 1
+    shift 
   fi
 done
 

@@ -1,7 +1,7 @@
 // The sole purpose of this file is to mix all headers in j-tools files
 // and to test them myself.
 
-#include "j-tools/j-structures/j_structures.h"
+#include "j-tools/j-structures/j_linkedList.h"
 #include <stdio.h>
 
 int main() {
@@ -35,5 +35,5 @@ int main() {
     printf("\n%s", val);
     free(val);
 
-    free_int_List( &list );
+    free_int_List(&list);
 }

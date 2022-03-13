@@ -114,7 +114,7 @@ char *int_List_String( int_LinkedList *HEAD )
     // Checa se está vazia
     if (HEAD->first == NULL)
     {
-        return "{ Null }";
+        return str_copy("{ null }");
     }
     
     else 
