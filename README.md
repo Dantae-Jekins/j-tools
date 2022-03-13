@@ -69,3 +69,9 @@ The only types of functions that i am avoiding to make are functions present wit
 - j_transform.h
 
     Simple, set of functions for data type conversion, specifically number - string - array transformations. 
+
+<br>
+
+- j_structures.h 
+    
+    Templates for data structures such as nodes, linked-lists, binary trees and more.

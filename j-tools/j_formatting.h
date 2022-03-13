@@ -1,20 +1,11 @@
 #ifndef J_STATYSTYKA_H
 #define J_STATYSTYKA_H
 
-// V.1
+// V 1.1
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
 
-
-void fill_array(int *array, int tam, int max, int min)
-{
-  int intervalo = max - min + 1;
-  for (int i = 0; i < tam; i++)
-    array[i] = (rand()%intervalo) + min;
-  
-}
 
 // extrai o múltiplo de menor conflito para print_simplified
 int best_mult(int num, int min, int max)
@@ -31,7 +22,8 @@ int best_mult(int num, int min, int max)
   return j;
 }
 
-// printa um array de forma legível
+
+// Printa um array de forma legível, útil quando este é enorme.
 void print_simplified(int *array, int tam)
 {
   // simplifica o array em apenas 8, 16 ou 32

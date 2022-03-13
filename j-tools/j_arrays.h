@@ -1,10 +1,11 @@
 #ifndef J_WEKTORY_H
 #define J_WEKTORY_H
 
-// V.1
+// V 1.1
 
 #include <stdlib.h>
-#include "j_math.h"
+#include "j_math.h" 
+#include <time.h>
 
 // retorna TAM elementos de array em outro vetor
 int *cpy_array(int *array, int tam)
@@ -15,6 +16,7 @@ int *cpy_array(int *array, int tam)
     return aux;
 }
 
+
 // limpa um array de tam posições (seta para 0)
 void clr_array(int *array, int tam)
 {
@@ -22,6 +24,8 @@ void clr_array(int *array, int tam)
         array[i] = 0;
 }
 
+
+// inverte um array
 void inv_array(int *array, int tam)
 {
     int *aux = cpy_array(array, tam); tam--;
@@ -29,6 +33,16 @@ void inv_array(int *array, int tam)
           array[i] = aux[tam-i]; 
 
     free(aux);
+}
+
+
+// Preenche um array de valores aleatórios, para servir de sample.
+void fill_array(int *array, int tam, int max, int min)
+{
+  int intervalo = max - min + 1;
+  for (int i = 0; i < tam; i++)
+    array[i] = (rand()%intervalo) + min;
+  
 }
 
 #endif

@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 // transforma um array de inteiros em uma string
-char* to_str(int *array, int tam)
+char *array_str(int *array, int tam)
 {
     char *aux = (char*)malloc(sizeof(char)*(tam+1));
     for (int i = 0; i < tam; i++)
