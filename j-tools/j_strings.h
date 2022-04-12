@@ -1,7 +1,7 @@
 #ifndef J_STRINGS_H
 #define J_STRINGS_H
 
-// V 1.2
+// V 1.3
 
 #include<stdlib.h>
 
@@ -17,7 +17,7 @@ int str_len(char *string)
 }
 
 
-// Retorna uma cópia de uma string. Necessário liberar memoria alocada.
+// Retorna uma cópia de uma string. Necessário liberar a memoria alocada.
 char *str_copy(char *string)
 {
     int tam = str_len(string);
@@ -29,8 +29,62 @@ char *str_copy(char *string)
     return aux;
 }
 
+// Separa uma string. Necessário liberar a memória alocada.
+// Retorna várias strings, termina com uma string NULL
+char **str_split( char *str, char keyword)
+{
+  int slen = str_len(str);
+  int string = 0;
+  int last_key = 0;
 
-// Retorna duas strings somadas. Necessário liberar memória alocada.
+  char **ret = (char **) malloc(sizeof( char *));
+  ret[0] = (char *) malloc(sizeof(char) * slen);
+  
+  int i = 0;
+  int j = 0;
+  for (; str[i] != '\0'; i++)
+  {
+    if (str[i] != keyword)
+    {
+      ret[string][j] = str[i];
+      j++;
+    }
+
+    else
+    {
+      // len = tamanho da leitura, contando keyword (i - last_key), + espaço nulo (+1)
+      int len = i - last_key + 1; 
+      
+      // achou keyword então aloca direito o espaço da string no contexto
+      ret[string] = (char *) realloc(ret[string], sizeof(char) * (len));
+      ret[string][len- 1] = '\0';
+
+      last_key = i; // incrementa a partida
+      string ++;  // incrementa a string a ser lida
+      j = 0;
+       
+      // e aloca mais um espaço para a próxima string
+      ret = ( char ** ) realloc(ret, sizeof(char *) * (string + 1));
+      ret[string] = malloc(sizeof(char) * ( slen - last_key));
+    }
+  } 
+
+  // terminou o for, aloca o espaço final
+  int len = i - last_key + 1; 
+  ret[string] = (char *) realloc(ret[string], sizeof(char) * (len));
+  ret[string][len- 1] = '\0';
+
+  last_key = i; // incrementa a partida
+  string ++;  // incrementa a string a ser lida
+  
+  ret = ( char ** ) realloc(ret, sizeof(char *) * (string + 1));
+  ret[string] = '\0';
+
+  return ret;
+}
+
+
+// Retorna duas strings somadas. Necessário liberar a memória alocada.
 char *str_concac(char *str1, char *str2)
 {
   // adquire os tamanhos
@@ -77,7 +131,7 @@ char *str_crop(unsigned int start, unsigned int end, char *str1)
 void str_mov(unsigned int i, char *str1, char *str2)
 {
   int j = 0;
-  while( j <= i )
+  while( j < i )
   {
     str1[j] = str2[j];
     j++;

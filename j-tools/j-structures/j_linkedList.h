@@ -10,155 +10,236 @@
 
 
 // ESTRUTURAS DE MEMÓRIA PARA INTEIROS
-
 // Node de memória (int)
 struct int_Node
 {
-    int val;
-    struct int_Node *nxt;
-} typedef int_Node; 
+    struct int_Node *next;
+    struct int_Node *prev;
+    int item;
+} typedef * int_n; 
 
 
 // Lista ligada (int | HEAD)
 typedef struct 
 {
-    int_Node *first;
-} int_LinkedList;
+    int_n ini;
+    int_n end;
+    int len;
+} int_ll;
 
 
-// Inicializa uma lista ligada
-int_LinkedList new_int_List() 
+// FUNÇÕES DE LISTAS PARA INTEIROS
+
+//Cria uma nova lista e retorna
+int_ll intll_new()
 {
-    int_LinkedList ret;
-    ret.first = NULL;
-    return ret;
+  int_ll ret;
+  ret.len = 0;
+  ret.ini = NULL;
+  ret.end = NULL;
+  return ret;
 }
 
 
-// Insere um componente na lista ligada
-void insert_int_List( int_LinkedList *HEAD, int value) 
-{    
-    // Cria uma nova node
-    int_Node *newNode = (int_Node*) malloc(sizeof(int_Node));
-    newNode->nxt = NULL;
-    newNode->val = value;
+// Adiciona um elemento ao inicio da lista
+// é necessário liberar a memória
+void intll_add_First(int_ll * target, int value)
+{
+  int_n new_n = malloc(sizeof( struct int_Node ));
+  new_n->item = value;
+  new_n->prev = NULL;
+  new_n->next = NULL;
 
-    // Sem node primária, insere uma
-    if (HEAD->first == NULL)
-    {
-        HEAD->first = newNode;
-        return;
-    }
+  if ( target->len == 0 )
+  {
+    target->ini = new_n;
+    target->end = new_n;
+    target->len = 1;
+    return;
+  }
 
-    // Com uma node primária, insere entre
-    else 
-    {
-        newNode->nxt = HEAD->first;
-        HEAD->first = newNode;
-        return;
-    }
+  target->len += 1;
+  
+  int_n aux = target->ini;
+  target->ini = new_n;
+
+  new_n->next = aux;
+  aux->prev = new_n;
 }
 
 
-// Remove o primeiro valor correspondente da lista ligada, retorna true com sucesso e false caso não exista
-bool remove_int_List( int_LinkedList *HEAD, int value)
+// Adiciona um elemento ao final da lista
+// é necessário liberar a memória
+void intll_add_Last(int_ll * target, int value)
 {
-    // Checa se existe algum elemento na lista
-    if (HEAD->first == NULL)
-        return false;
+  int_n new_n = malloc(sizeof( struct int_Node ));
+  new_n->item = value;
+  new_n->prev = NULL;
+  new_n->next = NULL;
 
-    // Checa se o primeiro elemento corresponde ao valor
-    if (HEAD->first->val == value) 
+  if ( target->len == 0 )
+  {
+    target->ini = new_n;
+    target->end = new_n;
+    target->len = 1;
+    return;
+  }
+
+  target->len += 1;
+  
+  int_n aux = target->end;
+  target->end = new_n;
+  
+  aux->next = new_n;
+  new_n->prev = aux;
+}
+
+
+// Função apenas para ser utilizada pela biblioteca no quesito remoção
+void __intll_remove_node(int_ll *target, int_n node)
+{
+  int_n parent = node->prev;
+  int_n child = node->next;
+  
+  // faz o antecessor se conectar ao sucessor
+  if (parent != NULL)
+    parent->next = child;
+
+  else
+    target->ini = child;
+
+  
+  // faz o sucessor se conectar ao antecessor
+  if (child != NULL)
+    child->prev = parent;
+
+  else
+    target->end = parent;
+
+
+  free(node);
+}
+
+
+// Remove um elemento da lista, retorna true com sucesso
+bool intll_Remove( int_ll * target, int value) 
+{
+  // checa o tamanho da lista
+  if (target->len == 0) return false; 
+  
+  if (target->len == 1 ) 
+  {
+    if (target->ini->item == value)
     {
-      // remove o elemento
-      int_Node *placeholder = HEAD->first->nxt;
-      free(HEAD->first);
-      HEAD->first = placeholder;
+      __intll_remove_node( target, target->ini );
       return true;
-    } 
+    }
+    else return false;
+  }
 
-    // Se não checa os elementos após o primeiro
-    int_Node *previous_Node = HEAD->first;
-    while(previous_Node->nxt != NULL) 
+  // exitem mais de dois elementos:
+  int_n parent = (int_n) target;
+  while(parent->next != NULL)
+  {
+    if ( parent->next->item == value )
     {
-        // o valor do próximo node é equivalente
-        if (previous_Node->nxt->val == value)
-        {
-            int_Node *placeholder = previous_Node->nxt->nxt;
-            free(previous_Node->nxt);
-            previous_Node->nxt = placeholder;
-            return true;
-        }
-
-        // movimenta
-        previous_Node = previous_Node->nxt;
+      __intll_remove_node( target, parent->next);
+      return true;
     }
 
-    return false;
+    // movimenta
+    parent = parent->next;
+  } 
+  
+  return false;
 }
 
 
-// Libera a memória de uma lista, serve como um clear.
-void free_int_List( int_LinkedList *HEAD ) 
+// retorna a quantidade de elementos da lista
+int intll_Count( int_ll target )
 {
-    while ( HEAD->first != NULL )
-    {
-        remove_int_List( HEAD, HEAD->first->val );
-    }
+  if (target.ini == NULL)
+    return 0;
+  
+  int_n current = target.ini;
+  int count = 1;
+  while ( current->next != NULL )
+  {
+    current = current->next;
+    count += 1;
+  }
+
+  return count;
 }
 
 
-// Retorna uma string dos valores da lista. Necessário liberar memória alocada
-char *int_List_String( int_LinkedList *HEAD )
+// transforma a lista em uma string, útil para printagem
+// é necessário liberar a memória
+char *intll_to_String( int_ll target)
 {
-    // Checa se está vazia
-    if (HEAD->first == NULL)
+
+  // Checa se está vazia
+  if (target.ini == NULL)
+  {
+    return str_copy("{ null }");
+  }
+
+  else
+  {
+    // prepara o retorno
+    char *ret = "{ ";
+    char *value = NULL;
+
+    // 2 strings para possibilitar free
+    char *str1 = str_copy( ret );
+    char *str2 = NULL;
+
+    // percorre
+    int_n This = target.ini;
+    while (1)
     {
-        return str_copy("{ null }");
+      // libera value
+      if ( value != NULL )
+        free(value);
+
+      value = ret_str(This->item);
+
+      // concatena e libera a string anterior
+      str2 = str_concac(str1, value);
+      free(str1);
+      str1 = str2;
+
+      // vê se é o fim
+      if (This->next == NULL)
+      {
+        str2 = str_concac(str1, " }");
+        free(str1);
+        free(value);
+        return str2;
+      }
+
+      // se não adiciona uma vírgula
+      str2 = str_concac(str1, ", ");
+      free(str1);
+      str1 = str2;
+
+      This = This->next;
     }
-    
-    else 
-    {
-        // prepara o retorno
-        char *ret = "{ ";
-        char *value = NULL;
+  } 
+}
 
-        // 2 strings para possibilitar free
-        char *str1 = str_copy( ret );
-        char *str2 = NULL;
 
-        // percorre
-        int_Node *This = HEAD->first;
-        while (1) 
-        {
-            // libera value
-            if ( value != NULL )
-                free(value);
-
-            value = ret_str(This->val);
-
-            // concatena e libera a string anterior
-            str2 = str_concac(str1, value);
-            free(str1);
-            str1 = str2;
-
-            // vê se é o fim
-            if (This->nxt == NULL)
-            {
-                str2 = str_concac(str1, " }");
-                free(str1);
-                free(value);
-                return str2;
-            }
-
-            // se não adiciona uma vírgula
-            str2 = str_concac(str1, ", ");
-            free(str1);
-            str1 = str2;
-            
-            This = This->nxt;
-        }
-    }
+// limpa a lista liberando toda sua memória
+void intll_Free( int_ll *target)
+{
+  int_n node = target->ini;
+  int_n aux;
+  while ( node != NULL )
+  {
+    aux = node->next;
+    __intll_remove_node(target, node);
+    node = aux;
+  }
 }
 
 #endif
