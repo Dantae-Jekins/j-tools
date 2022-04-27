@@ -65,7 +65,7 @@ char **str_split( char *str, char keyword)
        
       // e aloca mais um espaço para a próxima string
       ret = ( char ** ) realloc(ret, sizeof(char *) * (string + 1));
-      ret[string] = malloc(sizeof(char) * ( slen - last_key));
+      ret[string] = (char *) malloc(sizeof(char) * ( slen - last_key));
     }
   } 
 
