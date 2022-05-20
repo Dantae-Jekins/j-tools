@@ -78,7 +78,7 @@ char **str_split( char *str, char keyword)
   string ++;  // incrementa a string a ser lida
   
   ret = ( char ** ) realloc(ret, sizeof(char *) * (string + 1));
-  ret[string] = '\0';
+  ret[string] = NULL;
 
   return ret;
 }
@@ -128,7 +128,7 @@ char *str_crop(unsigned int start, unsigned int end, char *str1)
 
 
 // Move i elementos de str2 para str1
-void str_mov(unsigned int i, char *str1, char *str2)
+void str_mov(int i, char *str1, char *str2)
 {
   int j = 0;
   while( j < i )

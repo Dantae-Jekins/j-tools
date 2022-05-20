@@ -3,25 +3,31 @@
 
 // V 1.0
 
+#define MAX(a, b) (a>=b?a:b)
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
 
 // Estrutura do node
-struct bNode
+struct aNode
 {
-    struct bNode *dir; // right
-    struct bNode *esq; // left
-    struct bNode *par; // parent
+    struct aNode *dir; // right
+    struct aNode *esq; // left
+    struct aNode *par; // parent
     int val;
-} typedef * bnode;
+
+    int balanc; // fator de balanceamento
+    int height; // altura do nó
+
+} typedef * anode;
 
 
 // Estrutura da  BST
-struct bTree
+struct aTree
 {
-    struct bNode *root; // root
-} typedef bsTree;
+    struct aNode *root; // root
+} typedef avlTree;
 
 
 
@@ -42,20 +48,193 @@ struct bTree
 
 // Gera um novo node de memória e o retorna 
 // É necessário desalocar o espaço
-bnode __bnode_New( int val )
+anode __anode_New( int val )
 {
-    bnode ret = (bnode) malloc(sizeof(struct bNode));
+    anode ret = (anode) malloc(sizeof(struct aNode));
     ret->dir = NULL;
     ret->esq = NULL;
     ret->par = NULL;
     ret->val = val;
+    ret->height = 1;
+    ret->balanc = 0; 
     return ret;
 }
 
 
-// Função auxiliar para a bst_Insert, procura e insere um valor
+// Informa se o node é o filho direito de seu pai
+// Retorna true se for o direito, ou false se for o esquerdo ou não ter um pai
+bool __anode_isRChild(anode target)
+{
+    if (target->par == NULL)
+        return false;
+
+    if (target->par->dir == target)
+        return true;
+
+    else
+        return false;
+}
+
+
+/// Função que recalcula fatores de balanceamento e alturas dos nós,
+/// utilizada no momento da inserção, retorna se está desbalanceado
+void __anode_Recalc( anode target)
+{
+    anode This;
+    This = target;
+    int alturaEsq = 0;
+    int alturaDir = 0;
+
+    if ( This->esq )
+        alturaEsq = This->esq->height;
+
+    if ( This->dir )
+        alturaDir = This->dir->height;
+
+    //recalcula
+    This->height = MAX(alturaDir, alturaEsq) + 1; 
+    This->balanc = alturaDir - alturaEsq;
+}
+
+
+/// Rotaciona uma subárvore à direita e retorna o nó da subarvore
+anode __anode_rotateRight( anode target)
+{
+    anode node1 = target;
+    anode node2 = target->esq;
+    anode root = target->par;
+
+    __anode_Recalc(node1);
+    bool dir = __anode_isRChild( target);
+
+    // node 1 deixa de apontar para node 2
+    // e aponta para o direito do node 2
+    node1->esq = node2->dir;
+
+    // se esse nó não é nulo
+    if (node1->esq)
+        node1->esq->par = node1;
+
+    // node 2 deixa de apontar para direito
+    // e aponta para o node 1
+    node2->dir = node1;
+    node1->par = node2;
+
+    // ajustamos o pai
+    // se não é nulo
+    if (root)
+    {
+        if (dir)
+        {
+            root->dir = node2;
+            node2->par = root;
+        }
+
+        else
+        {
+            root->esq = node2;
+            node2->par = root;
+        }
+
+    }
+
+    __anode_Recalc(node1);
+    __anode_Recalc(node2);
+    
+    node2->par = root;
+    return node2;
+}
+
+
+/// Rotaciona uma subárvore à esquerda e retorna o nó da subarvore
+anode __anode_rotateLeft( anode target)
+{
+    anode node1 = target;
+    anode node2 = target->dir;
+    anode root = target->par;
+
+    __anode_Recalc(node1);
+    bool dir = __anode_isRChild( target);
+
+    // node 1 deixa de apontar para node 2
+    // e aponta para o esquerdo do node 2
+    node1->dir = node2->esq;
+
+    // se esse nó não é nulo
+    if (node1->dir)
+        node1->dir->par = node1;
+
+    // node 2 deixa de apontar para esquerdo
+    // e aponta para o node 1
+    node2->esq = node1;
+    node1->par = node2;
+
+    // ajustamos o pai
+    // se não é nulo
+    if (root)
+    {
+        if (dir)
+        {
+            root->dir = node2;
+            node2->par = root;
+        }
+
+        else
+        {
+            root->esq = node2;
+            node2->par = root;
+        }
+
+    }
+
+    __anode_Recalc(node1);
+    __anode_Recalc(node2);
+    
+    node2->par = root;
+
+    return node2;
+}
+
+
+/// Ajusta (Otimiza) a árvore em caso de desbalanceamento
+void __anode_Balance( anode target)
+{
+    anode This = target;
+    while(This)
+    {
+        __anode_Recalc(This);
+        // desbalanceado a esquerda
+        if (This->balanc < -1)
+        {
+            // e com a subarvore a direita
+            if (This->esq->balanc == 1)
+            {
+                __anode_rotateLeft(This->esq);
+            }
+
+            This = __anode_rotateRight(This);
+        }
+
+        // desbalanceado a direita
+        else if (This->balanc > 1)
+        {
+            // e com a subarvore a esquerda
+            if (This->dir->balanc == -1)
+            {
+                __anode_rotateRight(This->dir);
+                
+            }
+
+            This = __anode_rotateLeft(This);
+        }
+        This = This->par;
+    }
+}
+
+
+// Função auxiliar para a avl_Insert, procura e insere um valor
 // Retorna se o valor foi inserido ou se já existe, true se foi inserido
-bool __bnode_Insert( bnode target, int val)
+bool __anode_Insert( anode target, int val)
 {
 
     // se o valor for maior
@@ -64,16 +243,18 @@ bool __bnode_Insert( bnode target, int val)
         // se houver espaço disp
         if (target->dir == NULL)
         {
-            bnode newn = __bnode_New( val );
+            anode newn = __anode_New( val );
             newn->par = target;
             target->dir = newn;
+            __anode_Balance( target);
+
             return true;
         }
 
         // se não
         else
         {
-            return __bnode_Insert(target->dir, val);
+            return __anode_Insert(target->dir, val);
         }
     }
 
@@ -83,16 +264,18 @@ bool __bnode_Insert( bnode target, int val)
         // se houver espaço disp
         if (target->esq == NULL)
         {
-            bnode newn = __bnode_New( val );
+            anode newn = __anode_New( val );
             newn->par = target;
             target->esq = newn;
+            __anode_Balance( target);
+
             return true;
         }
 
         // se não
         else
         {
-            return __bnode_Insert(target->esq, val);
+            return __anode_Insert(target->esq, val);
         }
     }
 
@@ -105,18 +288,18 @@ bool __bnode_Insert( bnode target, int val)
 
 
 // Printa uma árvora ordenadamente a partir de um nó
-void __bnode_inOrder( bnode target)
+void __anode_inOrder( anode target)
 {
     if (target->esq != NULL)
     {
-        __bnode_inOrder( target->esq );
+        __anode_inOrder( target->esq );
     }
 
     printf("%d, ", target->val);
 
     if (target->dir != NULL)
     {
-        __bnode_inOrder( target->dir );
+        __anode_inOrder( target->dir );
     }
     
     return;
@@ -124,11 +307,11 @@ void __bnode_inOrder( bnode target)
 
 
 // Printa uma árvore de forma gráfica para análise
-void __bnode_Graphical( bnode target, int n)
+void __anode_Graphical( anode target, int n)
 {
     if (target->dir != NULL)
     {
-        __bnode_Graphical( target->dir, n+5 );
+        __anode_Graphical( target->dir, n+5 );
     }
     
     // printa
@@ -149,40 +332,25 @@ void __bnode_Graphical( bnode target, int n)
 
     if (target->esq != NULL)
     {
-        __bnode_Graphical( target->esq, n+5 );
+        __anode_Graphical( target->esq, n+5 );
     }
     
     return;
 }
 
 
-// Informa se o node é o filho direito de seu pai
-// Retorna true se for o direito, ou false se for o esquerdo ou não ter um pai
-bool __bnode_isRChild(bnode target)
-{
-    if (target->par == NULL)
-        return false;
-
-    if (target->par->dir == target)
-        return true;
-
-    else
-        return false;
-}
-
-
 // Libera o espaço de memória de um node, deletando-o
 // Retorna um nó, se a raiz for removida
-bnode __bnode_Remove(bnode target)
+anode __anode_Remove(anode target)
 {
     if (target == NULL)
         return NULL;
 
-    bnode esq = target->esq;
-    bnode dir = target->dir;
-    bnode pai = target->par;
+    anode esq = target->esq;
+    anode dir = target->dir;
+    anode pai = target->par;
 
-    bool rchild = __bnode_isRChild(target);
+    bool rchild = __anode_isRChild(target);
 
     // se possui pai
     if ( pai )
@@ -241,7 +409,7 @@ bnode __bnode_Remove(bnode target)
                 pai->esq = NULL;
             }
         }
-
+    
         free(target);
     }
 
@@ -277,9 +445,9 @@ bnode __bnode_Remove(bnode target)
 
 
 // Percorre uma subárvore e retorna o seu menor elemento
-bnode __bnode_minNode(bnode target)
+anode __anode_minNode(anode target)
 {
-    bnode This = target;
+    anode This = target;
     while(This->esq != NULL)
     {
         This = This->esq;
@@ -290,9 +458,9 @@ bnode __bnode_minNode(bnode target)
 
 
 // Percorre uma subárvore e retorna o seu maior elemento
-bnode __bnode_maxNode(bnode target)
+anode __anode_maxNode(anode target)
 {
-    bnode This = target;
+    anode This = target;
     while(This->dir != NULL)
     {
         This = This->dir;
@@ -303,9 +471,9 @@ bnode __bnode_maxNode(bnode target)
 
 
 // Retorna o node com o valor descrito, ou null se não existir
-bnode __bnode_Search(bnode target, int val)
+anode __anode_Search(anode target, int val)
 {
-    bnode This = target;
+    anode This = target;
     while(This != NULL)
     {
         if (This->val == val)
@@ -336,9 +504,9 @@ bnode __bnode_Search(bnode target, int val)
 
 
 // Gera uma nova árvore com valores nulos e retorna
-bsTree bst_New()
+avlTree avl_New()
 {
-    bsTree ret;
+    avlTree ret;
     ret.root = NULL;
     return ret;
 }
@@ -346,31 +514,45 @@ bsTree bst_New()
 
 // Insere um novo elemento na BST
 // Retorna se a inserção do elemento foi um sucesso
-bool bst_Insert( bsTree *target, int value)
+bool avl_Insert( avlTree *target, int value)
 {
-    // se a bst está vazia, inicializa
+    // se a avl está vazia, inicializa
     if (target->root == NULL)
     {
-        bnode newn = __bnode_New(value);
+        anode newn = __anode_New(value);
         target->root = newn;
+
+        __anode_Recalc(target->root);
         return true;
     }
 
-    // se a bst já contém valores
+    // se a avl já contém valores
     else
     {
-        return __bnode_Insert(target->root, value);
+        if(__anode_Insert(target->root, value))
+        {
+            // pegamos a raiz, se alterada
+            while(target->root->par != NULL)
+            {
+                target->root = target->root->par;
+            }
+    
+            return true;
+        }
+        
+        else
+            return false;
     }
 }
 
 
 // Printa a árvore ordenadamente
-void bst_inOrder( bsTree target)
+void avl_inOrder( avlTree target)
 {
     if (target.root != NULL)
     {
         printf("\n");
-        __bnode_inOrder( target.root );
+        __anode_inOrder( target.root );
         printf(" end");
     }
 
@@ -382,18 +564,18 @@ void bst_inOrder( bsTree target)
 
 
 // Printa um modelo gráfico da árvore
-void bst_Graphical( bsTree target)
+void avl_Graphical( avlTree target)
 {
     if (target.root != NULL)
     {
         printf("\n\n");
-        __bnode_Graphical(target.root, 1);
+        __anode_Graphical(target.root, 1);
     }
 }
 
 
-// Realiza um clear na bst, liberando toda sua memória
-void bst_Free( bsTree *target)
+// Realiza um clear na avl, liberando toda sua memória
+void avl_Free( avlTree *target)
 {
     if ( target->root == NULL )
     {
@@ -402,7 +584,7 @@ void bst_Free( bsTree *target)
 
     else
     {
-        bnode This = target->root;
+        anode This = target->root;
         do
         {
             // vai para a esquerda
@@ -421,8 +603,8 @@ void bst_Free( bsTree *target)
             else
             {
 
-                bnode aux = This->par;
-                __bnode_Remove(This);
+                anode aux = This->par;
+                __anode_Remove(This);
                 
                 // remove esse nó
                 // se é a raiz
@@ -444,36 +626,36 @@ void bst_Free( bsTree *target)
 
 
 // Retorna o menor número da BST
-int bst_minVal(bsTree target)
+int avl_minVal(avlTree target)
 {
     if(target.root == NULL)
     {
         return 0;
     }
 
-    bnode element = __bnode_minNode(target.root);
+    anode element = __anode_minNode(target.root);
     return element->val;
 }
 
 
 // Retorna o nó do menor elemento da subárvore
-int bst_maxVal(bsTree target)
+int avl_maxVal(avlTree target)
 {
     if (target.root == NULL)
     {
         return 0;
     }
 
-    bnode element = __bnode_maxNode(target.root);
+    anode element = __anode_maxNode(target.root);
     return element->val;
 }
 
 
 // Procura por um valor na árvore binária
 // Retorna true se o valor existe ou false se o valor não existe
-bool bst_Search(bsTree target, int value)
+bool avl_Search(avlTree target, int value)
 {
-    bnode found = __bnode_Search(target.root, value);
+    anode found = __anode_Search(target.root, value);
 
     if (found)
     {
@@ -486,13 +668,13 @@ bool bst_Search(bsTree target, int value)
 
 // Procura por um valor na árvore binária e o remove
 // Retorna true se o valor existe e foi removido ou false caso contrário
-bool bst_Remove( bsTree *target, int value )
+bool avl_Remove( avlTree *target, int value )
 {
-    bnode found = __bnode_Search(target->root, value);
+    anode found = __anode_Search(target->root, value);
     
     if (found)
     {
-        bnode new_root = __bnode_Remove(found);
+        anode new_root = __anode_Remove(found);
         
         if (new_root)
         {

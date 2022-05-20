@@ -4,6 +4,8 @@
 # file to group files into a folder
 # to make exporting easier
 
+# ./j-export.sh j-groups/jg_strings.h
+
 if [[ $1 == "" ]];
 then
     echo "Nenhum arquivo selecionado"

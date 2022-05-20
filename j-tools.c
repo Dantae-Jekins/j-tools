@@ -1,25 +1,30 @@
 // The sole purpose of this file is to mix all headers in j-tools files
 // and to test them myself.
 
-#include "./j-tools/j-structures/j_binaryTree.h"
+#include "./j-tools/j-structures/j_avlTree.h"
 #include <stdio.h>
 
 int main() {
-  bsTree main = bst_New();
 
-  bst_Insert(&main, 4);
-  bst_Insert(&main, 2);
-  bst_Insert(&main, 3);
-  bst_Insert(&main, 7);
-  bst_Insert(&main, 8);
-  bst_Insert(&main, 5);
+  avlTree arvore = avl_New();
 
-  bst_inOrder( main );
-  bst_Graphical( main );
-
-  printf("\n %d", bst_Remove(&main, 10));
-  printf("\n %d\n", bst_Remove(&main, 2));
+  avl_Insert(&arvore, 2);
+  avl_Insert(&arvore, 3);
+  avl_Insert(&arvore, 1);
+  avl_Graphical(arvore);
   
-  bst_Graphical( main );
-  bst_Free( &main );
+  avl_Insert(&arvore, 5);
+  avl_Insert(&arvore, 4);
+  avl_Insert(&arvore, 6);
+  avl_Graphical(arvore);
+
+  avl_Insert(&arvore, 10);
+  avl_Insert(&arvore, 9);
+  avl_Insert(&arvore, -1);
+  avl_Insert(&arvore, 0);
+  avl_Graphical(arvore);
+
+  avl_Free(&arvore);
+  return 0;
+
 }
