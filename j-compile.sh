@@ -1,7 +1,7 @@
 #!/bin/bash
 
 compile_program()
-{	
+{
     flags=""
     if $DEBUG; then
       flags+="-g"
@@ -32,7 +32,7 @@ do
 done
 
 INPUT=$1
-OUPUT=$2
+OUTPUT=$2
 
 if [ -f $2 ]; 
 then
@@ -51,7 +51,7 @@ then
 	file=$(<$INPUT)
 
   if ! [[ $file == *"#include"*"<allegro"* ]]; then
-  	compile_program "gcc" 
+  	compile_program "gcc"
   else
    var="$(cat $INPUT | grep "#include" | grep "allegro_")" #Acha as bibliotecas Allegro (linha)
    libs='allegro-5 ' # Inicializa variável libs

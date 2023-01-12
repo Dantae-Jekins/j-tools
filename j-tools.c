@@ -2,10 +2,12 @@
 // and to test them myself.
 
 #include "./j-tools/j-structures/j_avlTree.h"
+#include "./j-tools/j-structures/j_stringList.h"
 #include <stdio.h>
 
 int main() {
-
+  
+  /* EXEMPLO DE IMPLEMENTAÇÃO DE AVL
   avlTree arvore = avl_New();
 
   avl_Insert(&arvore, 2);
@@ -25,6 +27,11 @@ int main() {
   avl_Graphical(arvore);
 
   avl_Free(&arvore);
+  */
+
+  list list_string = list_new();
+  
+
   return 0;
 
 }
